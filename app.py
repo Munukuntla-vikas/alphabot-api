@@ -4,8 +4,8 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 # OpenServ API details
-OPEN_SERV_API_KEY = "YOUR_OPEN_SERV_API_KEY_HERE"
-OPEN_SERV_URL = "https://api.openserv.ai/execute"  # Update this URL if needed
+OPEN_SERV_API_KEY = "4d4eaf7cf09f468e9b7ef6f142aa46be"  # Your actual API key
+OPEN_SERV_URL = "https://api.openserv.ai/execute"  # Update if needed
 
 @app.route("/", methods=["GET"])
 def home():
