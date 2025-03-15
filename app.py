@@ -1,10 +1,11 @@
+import os
 import requests
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# OpenServ API details
-OPEN_SERV_API_KEY = "4d4eaf7cf09f468e9b7ef6f142aa46be"  # Your actual API key
+# OpenServ API details (use environment variables for security)
+OPEN_SERV_API_KEY = os.getenv("OPEN_SERV_API_KEY", "4d4eaf7cf09f468e9b7ef6f142aa46be")
 OPEN_SERV_URL = "https://api.openserv.ai/execute"  # Update if needed
 
 @app.route("/", methods=["GET"])
@@ -21,8 +22,8 @@ def openserv_agent():
         "type": "do-task",
         "task": {
             "description": "Sentiment Analysis",
-            "input": data["message"],
-            "result": data["sentiment"]
+            "input": data.get("message", ""),
+            "result": data.get("sentiment", "")
         }
     }
 
@@ -40,4 +41,5 @@ def openserv_agent():
         return jsonify({"error": "Failed to send to OpenServ", "details": response.text}), 400
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    PORT = int(os.environ.get("PORT", 10000))  # Use Render-assigned port
+    app.run(host="0.0.0.0", port=PORT)
