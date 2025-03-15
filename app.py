@@ -4,9 +4,8 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# OpenServ API details
 OPEN_SERV_API_KEY = os.getenv("OPEN_SERV_API_KEY", "4d4eaf7cf09f468e9b7ef6f142aa46be")
-OPEN_SERV_URL = "https://api.openserv.ai/execute"  # Update if needed
+OPEN_SERV_URL = "https://alphabot-api.onrender.com/openserv-agent"  # Check actual endpoint
 
 @app.route("/", methods=["GET"])
 def home():
@@ -15,19 +14,16 @@ def home():
 @app.route("/openserv-agent", methods=["POST"])
 def openserv_agent():
     data = request.json
-    print(f"📥 Received data from Telegram Bot: {data}")
+    print(f"📥 Received data: {data}")
 
-    # Validate input data
     if not data or "message" not in data or "sentiment" not in data:
         return jsonify({"error": "Invalid request. 'message' and 'sentiment' are required"}), 400
 
-    # Prepare data for OpenServ
     openserv_payload = {
-        "type": "do-task",
-        "task": {
-            "description": "Sentiment Analysis",
-            "input": data.get("message", ""),
-            "result": data.get("sentiment", "")
+        "type": "analyze",
+        "data": {
+            "message": data["message"],
+            "sentiment": data["sentiment"]
         }
     }
 
@@ -38,7 +34,6 @@ def openserv_agent():
 
     print(f"🚀 Sending data to OpenServ: {openserv_payload}")
 
-    # Send sentiment result to OpenServ
     response = requests.post(OPEN_SERV_URL, json=openserv_payload, headers=headers)
 
     print(f"🔄 OpenServ Response Code: {response.status_code}")
@@ -50,5 +45,5 @@ def openserv_agent():
         return jsonify({"error": "Failed to send to OpenServ", "details": response.text}), 400
 
 if __name__ == "__main__":
-    PORT = int(os.environ.get("PORT", 10000))  # Use Render-assigned port
+    PORT = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=PORT, debug=True)
