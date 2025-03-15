@@ -1,20 +1,43 @@
+import requests
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# Home route to check if the API is running
+# OpenServ API details
+OPEN_SERV_API_KEY = "YOUR_OPEN_SERV_API_KEY_HERE"
+OPEN_SERV_URL = "https://api.openserv.ai/execute"  # Update this URL if needed
+
 @app.route("/", methods=["GET"])
 def home():
     return jsonify({"message": "Alphabot API is running"}), 200
 
-# Endpoint to receive sentiment data from Telegram bot
 @app.route("/openserv-agent", methods=["POST"])
 def openserv_agent():
     data = request.json
     print(f"Received data: {data}")
 
-    # Simulate processing and response
-    return jsonify({"message": "Received successfully!", "data": data}), 200
+    # Prepare data for OpenServ
+    openserv_payload = {
+        "type": "do-task",
+        "task": {
+            "description": "Sentiment Analysis",
+            "input": data["message"],
+            "result": data["sentiment"]
+        }
+    }
+
+    headers = {
+        "x-openserv-key": OPEN_SERV_API_KEY,
+        "Content-Type": "application/json"
+    }
+
+    # Send sentiment result to OpenServ
+    response = requests.post(OPEN_SERV_URL, json=openserv_payload, headers=headers)
+
+    if response.status_code == 200:
+        return jsonify({"message": "Sent to OpenServ", "data": data}), 200
+    else:
+        return jsonify({"error": "Failed to send to OpenServ", "details": response.text}), 400
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)  # Change port to 5000 for Render
+    app.run(host="0.0.0.0", port=5000)
