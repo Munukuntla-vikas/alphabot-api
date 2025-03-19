@@ -1,4 +1,5 @@
 import os
+import nltk
 import requests
 from flask import Flask, request, jsonify
 from influencer_monitoring import check_influencer_mentions
