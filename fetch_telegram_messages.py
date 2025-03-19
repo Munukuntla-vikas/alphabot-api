@@ -5,7 +5,8 @@ from sentiment_analysis import analyze_sentiment
 
 # Replace with your Telegram Bot Token
 TELEGRAM_BOT_TOKEN = "7925251700:AAE8zDclP8xTK0-VNNKZhTgf-ZfuMDSzHzE"
-ALPHABOT_API_URL = "https://alphabot-api-2.onrender.com/openserv-agent"
+ALPHABOT_API_URL = "https://alphabot-api-2.onrender.com/process-message"
+"
 
 def send_to_alphabot_api(message_text, sentiment):
     """Send analyzed sentiment to the Alphabot API."""
